@@ -1,0 +1,60 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width">
+
+    <script src='file:///android_asset/app.js'></script>
+    <script type="text/javascript" src="Html/phaser.2.4.3.min.js"></script>
+
+    <script src='globals.js'></script>
+    <script src='functions.js'></script>
+    <script src='buttons.js'></script>
+
+    <!-- Phaser game states -->
+    <script src='boot.js'></script>
+    <script src='load.js'></script>
+    <script src='menu.js'></script>
+    <script src='play.js'></script>
+    <script src='gameover.js'></script>
+
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        var game = new Phaser.Game(800, 480, Phaser.CANVAS, "game");
+
+        // Screen setup
+        var screenWidth = 800;
+        var screenHeight = 480;
+
+        /* --- BEND DATA INPUT --- */
+        function updateBend(A0, A1, A2, A3, A4, A5, A6, A7, btnState) {
+            //console.log(A0 + "," + A1 + "," + A2 + "," + A3 + "," + A4 + "," + A5 + "," + A6 + "," + A7);
+            A[0] = A0;
+            A[1] = A1;
+            A[2] = A2;
+            A[3] = A3;
+            A[4] = A4;
+            A[5] = A5;
+            A[6] = A6;
+            A[7] = A7;
+            buttonState = btnState;
+        }
+
+        game.state.add("boot", boot);
+        game.state.add("load", load);
+        game.state.add("menu", menu);
+        game.state.add("play", play);
+        game.state.add("gameover", gameover);
+
+        game.state.start("boot");
+    </script>
+</body>
+
+</html>
