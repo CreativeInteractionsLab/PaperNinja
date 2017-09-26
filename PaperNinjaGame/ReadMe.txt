@@ -40,3 +40,25 @@ https://phaser.io/docs/2.4.3/Phaser.State.html
 Some useful references (I don't know why I couldn't find them at Phaser's own references):
 game.add.button(xCoordinate, yCoordinate, nameOfGraphicAsset, callbackFunction, referenceToThis, ...)
 
+===
+
+Here are the gesture/control mappings. Originally there were 8 bend sensors, but the final design only had 4, so this will be the biggest change I've made to Elias' code... from assuming 8 sensors to reading just 4.
+
+A0 \		/ A1
+
+
+A2 /		\ A3
+
+Action		Gesture					Senors
+------		------					------
+Move left	Left side down				A0 & A2
+Move up		Top side down				A0 & A1
+Move right	Right side down				A1 & A3
+Fold in half	Top side up				A0 & A1
+Shoot		Top right up				A1
+Hold#1		Top left down				A0
+Hold#2		Top right down				A1
+Make thin	Left side up + Right side up		A0 & A2 + A1 & A3
+Crumple		Top left up + bottom right up		A0 + A3
+Kick#1		Buttom left up + bottom right down	A2 + A3
+Kick#2		Buttom left down + bottom right up	A2 + A3
