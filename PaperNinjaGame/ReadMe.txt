@@ -35,6 +35,8 @@ When PN starts, it first goes to OnStart(), does a bunch of setup, and loads the
 The "preload" function is a standard Phaser function that is called automatically when entering that state, typically used to load assets; "create" is another standard Phaser function that is called once "preload" finishes:
 https://phaser.io/docs/2.4.3/Phaser.State.html
 
+To pair the bluetooth module, look for "HC-05", with PIN 1234.
+
 ===
 
 Some useful references (I don't know why I couldn't find them at Phaser's own references):

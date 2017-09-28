@@ -20,6 +20,7 @@ function logInput(bend) {
     totalGesturesPerformed++; // Every time we log a bend input, increment the total number of inputs
     gesturesPerformed.push(bend);
 }
+
 // Record and store time and number of gesture inputs for this obstacle
 function storeThisInfo(checkpoint) {
     switch (checkpoint) {
@@ -67,8 +68,9 @@ function storeThisInfo(checkpoint) {
         completedLevel = 'y';
         string += "," + completedLevel + "," + getLevelPlayTime() + "," + time + "\n";
         obstacleIndex = 0; // Reset the obstacle index to 0 for the next round/level
-    } else
+    } else {
         string += ",-,-," + time + "\n";
+    }
 
     app.WriteFile(fileLocation, string, "Append");
     gesturesPerformed = []; // After we log this gesture's info, we reset the gesturesPerformed array to empty
@@ -93,9 +95,19 @@ function shuffle(array) {
     return array;
 };
 
+// Populate the array (and the buttonState variable) whenever it receives the sensor values via bluetooth
+function updateBend(A0, A1, A2, A3, btnState) {
+    //console.log(A0 + "," + A1 + "," + A2 + "," + A3 + "," + A4);
+    A[0] = A0;
+    A[1] = A1;
+    A[2] = A2;
+    A[3] = A3;
+    buttonState = btnState;
+};
+
 // Initialize the straight values of each bend sensor
 function initializeFlatValues() {
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < A.length; i++) {
         flat_A[i] = A[i];
     }
     console.log("flat values saved");

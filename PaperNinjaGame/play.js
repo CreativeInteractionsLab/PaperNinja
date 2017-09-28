@@ -57,8 +57,8 @@ var play = {
         var ground = platforms.create(0, game.world.height - 20, 'ground'); // The platform has a height of 20
         ground.body.immovable = true;
 
-        // Call obstaclePlatform function to create the randomized map
-        //shuffle(obstacles);
+        // Call obstaclePlatform function to create the map
+        //shuffle(obstacles); //<--uncomment this line if you want a randomized map
         for (var i = 1; i <= obstacles.length; i++) {
             this.obstaclePlatform(i, obstacles[i - 1]);
         }
@@ -84,6 +84,7 @@ var play = {
         blockBin.anchor.setTo(1);
 
         /* --- BUTTONS --- */
+        //show the control as on-screen buttons if the bend sensors are not available or for testing purposes
         if (showButtons) {
             // Bottom side up button
             jumpButton = game.add.button(screenWidth * 0.25, screenHeight * 0.8, 'upButton', canvas_moveUp, this);
@@ -163,7 +164,7 @@ var play = {
         // clearWorld, default at true, clearCache (assets), default at false, everything else are variables we pass
 
         // Left side up + Right side up = thin paper
-        if ((flat_A[0] - A[0]) > 50 && (A[3] - flat_A[3]) > 50 && (flat_A[4] - A[4]) > 50 && (A[7] - flat_A[7]) > 50) {
+        if ((flat_A[0] - A[0]) > 50 && (A[2] - flat_A[2]) > 50 && (flat_A[1] - A[1]) > 50 && (A[3] - flat_A[3]) > 50) {
             logInput("LSU+RSU");
             paperSprite.loadTexture('thin');
             paperSprite.body.setSize(paperSprite.width, paperSprite.height);
@@ -171,21 +172,21 @@ var play = {
             paperIsThin = true;
         }
         /* --- FIRST CHECK IF PAPER IS MOVING --- */
-        //  Right side up = move left (Unless paper reached left bounds)
-        else if ((flat_A[4] - A[4]) > 70 && (A[7] - flat_A[7]) > 70 && paperSprite.x > 0) {
-            logInput("RSU");
+        //  Left side down = move left (Unless paper reached left bounds)
+        else if ((A[0] - flat_A[0]) > 70 && (A[2] - flat_A[2]) > 70 && paperSprite.x > 0) {
+            logInput("LSD");
             paperSprite.body.velocity.x = -250;
             paperIsMoving = true;
         }
-        //  Left side up = move right (Unless paper reached right bounds)
-        else if ((flat_A[0] - A[0]) > 70 && (A[3] - flat_A[3]) > 70 && (paperSprite.x + paperSprite.width) < game.world.width) {
-            logInput("LSU");
+        //  Right side down = move right (Unless paper reached right bounds)
+        else if ((A[1] - flat_A[1]) > 70 && (A[3] - flat_A[3]) > 70 && (paperSprite.x + paperSprite.width) < game.world.width) {
+            logInput("RSD");
             paperSprite.body.velocity.x = 250;
             paperIsMoving = true;
         }
-        //  Bottom side up to jump up (not move)
-        else if (((A[1] - flat_A[1]) > 120 && (flat_A[6] - A[6]) > 120) && paperSprite.y > 0) {
-            logInput("BSU");
+        //  Top side down to jump up (not move)
+        else if (((A[0] - flat_A[0]) > 120 && (A[1] - flat_A[1]) > 120) && paperSprite.y > 0) {
+            logInput("TSD");
             paperSprite.body.velocity.y = -400;
             paperIsMoving = true;
         } else {
@@ -195,9 +196,9 @@ var play = {
 
         /* --- SECOND CHECK IF PAPER IS NOT MOVING --- */
         if (!paperIsMoving) {
-            // Top right down = hold1
-            if (paperIsOnWall && (A[4] - flat_A[4]) > 50 && (flat_A[5] - A[5]) > 50) {
-                logInput("TRD");
+            // Top left down = hold1
+            if (paperIsOnWall && (A[0] - flat_A[0]) > 50) {
+                logInput("TLD");
                 if (hold1Once) {
                     paperSprite.x += (paperSprite.width / 2) - 20;
                     hold1Once = false;
@@ -212,9 +213,9 @@ var play = {
                 paperIsBent = false;
             }
 
-            // Top left down = hold2
-            else if (paperIsOnWall && (A[2] - flat_A[2]) > 50 && (flat_A[3] - A[3]) > 50) {
-                logInput("TLD");
+            // Top right down = hold2
+            else if (paperIsOnWall && (A[1] - flat_A[1]) > 50) {
+                logInput("TRD");
                 if (!hold2Once) {
                     paperSprite.x += (paperSprite.width / 2) + 25;
                     hold2Once = true;
@@ -227,7 +228,7 @@ var play = {
             }
 
             //  Top side up = fold paper
-            else if ((flat_A[2] - A[2]) > 150 && (A[5] - flat_A[5]) > 150) {
+            else if ((flat_A[0] - A[0]) > 150 && (flat_A[1] - A[1]) > 150) {
                 logInput("TSU");
                 paperSprite.loadTexture('folded');
                 paperSprite.body.setSize(paperSprite.width, paperSprite.height);
@@ -236,7 +237,7 @@ var play = {
             }
 
             // Top left up + Bottom right up = crumpled ball
-            else if ((flat_A[2] - A[2]) > 100 && (A[3] - flat_A[3]) > 100 && (flat_A[6] - A[6]) > 100 && (A[7] - flat_A[7]) > 100) {
+            else if ((flat_A[0] - A[0]) > 100 && (flat_A[3] - A[3]) > 100) {
                 logInput("TLU+BRU");
                 paperSprite.loadTexture('crumpled');
                 paperSprite.body.setSize(paperSprite.width, paperSprite.height);
@@ -245,7 +246,7 @@ var play = {
             }
 
             // Bottom left up + Bottom right down (alternating) = kick1
-            else if ((flat_A[0] - A[0]) > 50 && (A[1] - flat_A[1]) > 50 && (A[6] - flat_A[6]) > 50 && (flat_A[7] - A[7]) > 50) {
+            else if ((flat_A[2] - A[2]) > 50 && (A[3] - flat_A[3]) > 50) {
                 logInput("BLU+BRD");
                 paperSprite.loadTexture('kick1');
                 paperSprite.body.setSize(paperSprite.width, paperSprite.height);
@@ -273,7 +274,7 @@ var play = {
             }
 
             // Bottom left down + Bottom right up (alternating) = kick2
-            else if ((A[0] - flat_A[0]) > 50 && (flat_A[1] - A[1]) > 50 && (flat_A[6] - A[6]) > 50 && (A[7] - flat_A[7]) > 50) {
+            else if ((flat_A[2] - A[2]) > 50 && (A[3] - flat_A[3]) > 50) {
                 logInput("BLD+BRU");
                 paperSprite.loadTexture('kick2');
                 paperSprite.body.setSize(paperSprite.width, paperSprite.height);
@@ -301,7 +302,7 @@ var play = {
             }
 
             // Top right up = shoot
-            else if ((flat_A[4] - A[4]) > 200 && (A[5] - flat_A[5]) > 200) {
+            else if ((A[1] - flat_A[1]) > 50) {
                 logInput("TRU");
                 paperSprite.loadTexture('shoot');
                 paperSprite.body.setSize(paperSprite.width, paperSprite.height);
@@ -324,7 +325,9 @@ var play = {
         }
         /* --- THIRD IF PAPER IS BENT THEN USER CAN UNBEND IT --- */
         if (paperIsBent) {
-            if ((paperIsThin && (A[0] - flat_A[0]) > 50 && (flat_A[3] - A[3]) > 50 && (A[4] - flat_A[4]) > 50 && (flat_A[7] - A[7]) > 50) || (paperIsFolded && (A[2] - flat_A[2]) > 50 && (flat_A[5] - A[5]) > 50) || (paperIsCrumpled && (A[2] - flat_A[2]) > 50 && (flat_A[3] - A[3]) > 50 && (A[6] - flat_A[6]) > 50 && (flat_A[7] - A[7]) > 50)) {
+            if (paperIsThin && (flat_A[0] - A[0]) > 50 && (A[2] - flat_A[2]) > 50 && (flat_A[1] - A[1]) > 50 && (A[3] - flat_A[3]) > 50
+                || paperIsFolded && (flat_A[0] - A[0]) > 150 && (flat_A[1] - A[1]) > 150 
+                || paperIsCrumpled && (flat_A[0] - A[0]) > 100 && (flat_A[3] - A[3]) > 100) {
                 paperSprite.loadTexture('normal');
                 paperSprite.body.setSize(paperSprite.width, paperSprite.height);
                 paperSprite.body.velocity.x = 0;
@@ -744,3 +747,176 @@ var play = {
         }
     }
 }
+
+/* This is the original gesture mapping assuming that there are 8 bend sensors
+        // Left side up + Right side up = thin paper
+        if ((flat_A[0] - A[0]) > 50 && (A[3] - flat_A[3]) > 50 && (flat_A[4] - A[4]) > 50 && (A[7] - flat_A[7]) > 50) {
+            logInput("LSU+RSU");
+            paperSprite.loadTexture('thin');
+            paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+            paperIsBent = true;
+            paperIsThin = true;
+        }
+        // --- FIRST CHECK IF PAPER IS MOVING
+        //  Right side up = move left (Unless paper reached left bounds)
+        else if ((flat_A[4] - A[4]) > 70 && (A[7] - flat_A[7]) > 70 && paperSprite.x > 0) {
+            logInput("RSU");
+            paperSprite.body.velocity.x = -250;
+            paperIsMoving = true;
+        }
+        //  Left side up = move right (Unless paper reached right bounds)
+        else if ((flat_A[0] - A[0]) > 70 && (A[3] - flat_A[3]) > 70 && (paperSprite.x + paperSprite.width) < game.world.width) {
+            logInput("LSU");
+            paperSprite.body.velocity.x = 250;
+            paperIsMoving = true;
+        }
+        //  Bottom side up to jump up (not move)
+        else if (((A[1] - flat_A[1]) > 120 && (flat_A[6] - A[6]) > 120) && paperSprite.y > 0) {
+            logInput("BSU");
+            paperSprite.body.velocity.y = -400;
+            paperIsMoving = true;
+        } else {
+            paperSprite.body.velocity.x = 0;
+            paperIsMoving = false;
+        }
+
+        // --- SECOND CHECK IF PAPER IS NOT MOVING --- 
+        if (!paperIsMoving) {
+            // Top right down = hold1
+            if (paperIsOnWall && (A[4] - flat_A[4]) > 50 && (flat_A[5] - A[5]) > 50) {
+                logInput("TRD");
+                if (hold1Once) {
+                    paperSprite.x += (paperSprite.width / 2) - 20;
+                    hold1Once = false;
+                }
+                paperSprite.loadTexture('hold1');
+                paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+                if (hold2Once) {
+                    hold2Once = false;
+                }
+                paperSprite.body.gravity.y = 0;
+                paperSprite.body.velocity.y = 0;
+                paperIsBent = false;
+            }
+
+            // Top left down = hold2
+            else if (paperIsOnWall && (A[2] - flat_A[2]) > 50 && (flat_A[3] - A[3]) > 50) {
+                logInput("TLD");
+                if (!hold2Once) {
+                    paperSprite.x += (paperSprite.width / 2) + 25;
+                    hold2Once = true;
+                }
+                paperSprite.loadTexture('hold2');
+                paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+                paperSprite.body.gravity.y = 0;
+                paperSprite.body.velocity.y = 0;
+                paperIsBent = false;
+            }
+
+            //  Top side up = fold paper
+            else if ((flat_A[2] - A[2]) > 150 && (A[5] - flat_A[5]) > 150) {
+                logInput("TSU");
+                paperSprite.loadTexture('folded');
+                paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+                paperIsBent = true;
+                paperIsFolded = true;
+            }
+
+            // Top left up + Bottom right up = crumpled ball
+            else if ((flat_A[2] - A[2]) > 100 && (A[3] - flat_A[3]) > 100 && (flat_A[6] - A[6]) > 100 && (A[7] - flat_A[7]) > 100) {
+                logInput("TLU+BRU");
+                paperSprite.loadTexture('crumpled');
+                paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+                paperIsBent = true;
+                paperIsCrumpled = true;
+            }
+
+            // Bottom left up + Bottom right down (alternating) = kick1
+            else if ((flat_A[0] - A[0]) > 50 && (A[1] - flat_A[1]) > 50 && (A[6] - flat_A[6]) > 50 && (flat_A[7] - A[7]) > 50) {
+                logInput("BLU+BRD");
+                paperSprite.loadTexture('kick1');
+                paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+                paperIsBent = false;
+                // Increment hit count by 1 Once
+                if (waitForKick1) {
+                    breakHitPoint++;
+                    waitForKick1 = false;
+                    waitForKick2 = true;
+                    switch (breakHitPoint) {
+                    case 1:
+                        hTween1.start();
+                        break;
+                    case 2:
+                        hTween2.start();
+                        break;
+                    case 3:
+                        hTween3.start();
+                        break;
+                    case 4:
+                        hTween4.start();
+                        break;
+                    }
+                }
+            }
+
+            // Bottom left down + Bottom right up (alternating) = kick2
+            else if ((A[0] - flat_A[0]) > 50 && (flat_A[1] - A[1]) > 50 && (flat_A[6] - A[6]) > 50 && (A[7] - flat_A[7]) > 50) {
+                logInput("BLD+BRU");
+                paperSprite.loadTexture('kick2');
+                paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+                paperIsBent = false;
+                // Increment hit count by 1 Once
+                if (waitForKick2) {
+                    breakHitPoint++;
+                    waitForKick1 = true;
+                    waitForKick2 = false;
+                    switch (breakHitPoint) {
+                    case 1:
+                        hTween1.start();
+                        break;
+                    case 2:
+                        hTween2.start();
+                        break;
+                    case 3:
+                        hTween3.start();
+                        break;
+                    case 4:
+                        hTween4.start();
+                        break;
+                    }
+                }
+            }
+
+            // Top right up = shoot
+            else if ((flat_A[4] - A[4]) > 200 && (A[5] - flat_A[5]) > 200) {
+                logInput("TRU");
+                paperSprite.loadTexture('shoot');
+                paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+                this.shootPaperAirplanes();
+                paperIsBent = false;
+            }
+            // No bends
+            else {
+                if (!paperIsBent)
+                    paperSprite.loadTexture('normal');
+                paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+                paperSprite.body.velocity.x = 0;
+                paperSprite.body.gravity.y = gravity;
+            }
+        }
+        // --- THIRD IF PAPER IS BENT THEN USER CAN UNBEND IT ---
+        if (paperIsBent) {
+            if ((paperIsThin && (A[0] - flat_A[0]) > 50 && (flat_A[3] - A[3]) > 50 && (A[4] - flat_A[4]) > 50 && (flat_A[7] - A[7]) > 50) || (paperIsFolded && (A[2] - flat_A[2]) > 50 && (flat_A[5] - A[5]) > 50) || (paperIsCrumpled && (A[2] - flat_A[2]) > 50 && (flat_A[3] - A[3]) > 50 && (A[6] - flat_A[6]) > 50 && (flat_A[7] - A[7]) > 50)) {
+                paperSprite.loadTexture('normal');
+                paperSprite.body.setSize(paperSprite.width, paperSprite.height);
+                paperSprite.body.velocity.x = 0;
+                if (!hold1Once) {
+                    hold1Once = true;
+                }
+                paperIsBent = false;
+                paperIsThin = false;
+                paperIsFolded = false;
+                paperIsCrumpled = false;
+            }
+        }
+*/
