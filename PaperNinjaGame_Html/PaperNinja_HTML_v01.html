@@ -1,0 +1,78 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width">
+    <script src='file:///android_asset/app.js'></script>
+    
+    <script type="text/javascript" src="Html/phaser.2.6.2.min.js"></script>
+        
+    <!-- Utility stuff for the game -->
+    <script src='globals.js'></script>
+    <script src='functions.js'></script>
+    <script src='buttons.js'></script>
+    
+    <!-- Phaser game states -->
+    <script src='boot.js'></script>
+    <script src='load.js'></script>
+    <script src='menu.js'></script>
+    <script src='play.js'></script>
+    <script src='gameover.js'></script>
+        
+</head>
+	
+<script>
+    //Called after application is started.
+    function OnStart()
+    {
+        app.SetOrientation("Landscape"); // Lock screen orientation to Landscape
+        app.PreventScreenLock(true); // Stop screen turning off while playing
+        app.SetScreenMode("Game"); // Hide the status bar (fullscreen mode)
+        app.SetDebugEnabled(debugMode); // true or false
+
+        // Create a layout with objects vertically centered
+        layout = app.CreateLayout("linear", "Horizontal,VCenter,FillXY");
+        
+        // Connect to Arduino via bluetooth
+        if (!showButtons) {
+            // Create Bluetooth serial object
+            bt = app.CreateBluetoothSerial();
+            bt.SetOnConnect(bt_OnConnect);
+            bt.SetOnReceive(bt_OnReceive);
+            bt.SetSplitMode("End", "\n");
+
+            // Connect to the HC-05 bluetooth chip
+            bt.Connect("HC-05");
+        }
+    }
+</script>
+
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+
+<body onload="app.Start()">
+    <script>
+        //the constructor of the main Phaser game object, all arguments are optional
+        //new Game(width, height, renderer, parent, state, transparent, antialias, physicsConfig)
+        var game = new Phaser.Game(800, 600, Phaser.CANVAS, "game");
+
+        console.log("Game object created");
+
+        // Screen setup
+        var screenWidth = game.width;//800;
+        var screenHeight = game.height;//600;
+
+        //States setup, causal name, followed by the name used to define the corresponding function
+        game.state.add("boot", boot);
+        game.state.add("load", load);
+        game.state.add("menu", menu);
+        game.state.add("play", play);
+        game.state.add("gameover", gameover);
+
+        console.log("Starting boot state");
+        //start the boot state
+        game.state.start("boot");
+    </script>	
+</body>
+</html>
