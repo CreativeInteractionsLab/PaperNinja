@@ -46,6 +46,6 @@ void loop() {
   // Send it to Serial to see it in the Serial Monitor
   Serial.println(data);
   
-  // Delay 10 milliseconds before the next reading to avoid overload
-  delay(10);
+  // Delay 100 milliseconds before the next reading to avoid overload
+  delay(100);
 }
