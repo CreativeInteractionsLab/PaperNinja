@@ -75,3 +75,24 @@ var paperIsMoving = false;
 var paperIsBent = false;
 
 var paperIsOnWall = false;
+
+//thresholds for each side/corner bend
+var LSDthreshold = 70;
+var RSDthreshold = 70;
+var TSDthreshold = 120;
+var BSDthreshold = 120;
+
+var LSUthreshold = 50;
+var RSUthreshold = 50;
+var TSUthreshold = 70;
+var BSUthreshold = 70;
+
+var TLDthreshold = 50;
+var TRDthreshold = 50;
+var BLDthreshold = 50;
+var BRDthreshold = 50;
+
+var TLUthreshold = 100;
+var TRUthreshold = 50;
+var BLUthreshold = 50;
+var BRUthreshold = 100;

@@ -31,14 +31,20 @@ function bt_OnConnect(ok) {
 // Called when we get data from bluetooth device (array of analogRead inputs from Arduino)
 function bt_OnReceive(data) {
     A = data.split(",");
-    console.log("Received: " + A[0]+","+A[1]+","+A[2]+","+A[3]+","+A[4]);
+    //console.log("Received: " + A[0]+","+A[1]+","+A[2]+","+A[3]+","+A[4]);
+    //console.log("Flat: " + flat_A[0]+","+flat_A[1]+","+flat_A[2]+","+flat_A[3]+","+flat_A[4]);
 
     // Send data to Phaser web control (sometimes BT is slow and not all values are received right away)
-    if (!(A[0] === undefined || A[1] === undefined || A[2] === undefined || A[3] === undefined)) {//if all elements have some value
-        console.log("use above");
+    if (A[0] === undefined || A[1] === undefined || A[2] === undefined || A[3] === undefined || A[4] === undefined
+        || A[0] === "" || A[1] === "" || A[2] === "" || A[3] === "" || A[4] === "")  {//if all elements have some value
+        console.log("Incompete values, skip");
+        return;
+    } else {
         //web.Execute("updateBend(" + A[0] + "," + A[1] + "," + A[2] + "," + A[3] + "," + A[4] + ")");
-        updateBend(parseInt(A[0]), parseInt(A[1]), parseInt(A[2]), parseInt(A[3]), parseInt(A[4]));
+        updateBend(A[0], A[1], A[2], A[3], A[4]);
+        //console.log("Use above");
     }
+
 };
 
 // Record every bend input the user makes
@@ -123,12 +129,12 @@ function shuffle(array) {
 
 // Populate the array (and the buttonState variable) whenever it receives the sensor values via bluetooth
 function updateBend(A0, A1, A2, A3, btnState) {
-    //console.log(A0 + "," + A1 + "," + A2 + "," + A3 + "," + A4);
-    A[0] = A0;
-    A[1] = A1;
-    A[2] = A2;
-    A[3] = A3;
-    buttonState = btnState;
+    console.log("updateBend: " + A0 + "," + A1 + "," + A2 + "," + A3 + "," + btnState);
+    A[0] = parseInt(A0);
+    A[1] = parseInt(A1);
+    A[2] = parseInt(A2);
+    A[3] = parseInt(A3);
+    buttonState = parseInt(btnState);
 };
 
 // Initialize the straight values of each bend sensor
@@ -136,5 +142,5 @@ function initializeFlatValues() {
     for (var i = 0; i < A.length; i++) {
         flat_A[i] = A[i];
     }
-    console.log("flat values saved");
+    console.log("flat values updated");
 };
